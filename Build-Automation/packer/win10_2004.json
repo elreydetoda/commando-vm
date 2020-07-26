@@ -1,0 +1,44 @@
+{
+  "_comment_space": "This preliminary template contains files which are only good for Windows 10 2004",
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+
+      "vm_name": "Windows_10_2004_x64_commando",
+      "guest_os_type": "Windows10_64",
+      "iso_url": "<wherever it is located>",
+      "iso_checksum": "<whatever the hash of it is>",
+      "communicator": "winrm",
+      "winrm_username": "packer-commando",
+	  "winrm_password": "packer-commando",
+      "cpus": "4",
+	  "memory": "4096",
+      "disk_size": "71680",
+      "hard_drive_interface": "sata",
+      "floppy_files": [
+        "./support_files/Autounattend.xml",
+        "./support_files/setup.ps1"
+      ],
+      "shutdown_command": "shutdown /s /t 0",
+      "keep_registered": true,
+      "hard_drive_nonrotational": true,
+      "post_shutdown_delay": "10m"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "inline": ["dir c:\\"]
+    },
+     {
+       "pause_before": "10m",
+       "type": "windows-update",
+       "search_criteria": "IsInstalled=0",
+       "filters": [
+         "exclude:$_.Title -like '*Preview*'",
+         "include:$true"
+       ]
+     }
+  ]
+}

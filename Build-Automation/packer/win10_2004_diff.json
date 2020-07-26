@@ -1,0 +1,46 @@
+{
+  "_comment_space": "",
+  "builders": [
+    {
+      "type": "virtualbox-vm",
+
+      "vm_name": "Windows_10_2004_x64_commando",
+      "communicator": "winrm",
+      "winrm_username": "packer-commando",
+	  "winrm_password": "packer-commando",
+      "disable_shutdown": true,
+      "keep_registered": true,
+      "target_snapshot": "commando-snapshot",
+      "attach_snapshot": "Snapshot_1",
+      "force_delete_snapshot": true,
+      "skip_export": true,
+      "shutdown_timeout": "30m"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "inline": ["dir c:\\"]
+    },
+    {
+      "type": "file",
+      "source": "install.ps1",
+      "destination": "C:/Users/packer-commando/Downloads/install.ps1"
+    },
+    {
+       "pause_before": "30s",
+       "type": "powershell",
+       "inline": [
+         "Unblock-File C:/Users/packer-commando/Downloads/install.ps1",
+         "C:/Users/packer-commando/Downloads/install.ps1 -password packer-commando -snapshot_check 0"
+       ]
+    },
+    {
+      "pause_before": "60m",
+      "max_retries": 10,
+      "type": "windows-shell",
+      "inline": ["dir c:\\"]
+    }
+  ]
+}
