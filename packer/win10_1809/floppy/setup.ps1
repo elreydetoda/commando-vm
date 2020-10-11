@@ -27,8 +27,8 @@ Set-ItemProperty $key -Name HideFileExt -Value 0
 Set-ItemProperty $key -Name ShowSuperHidden -Value 1
 
 # Reboot of explorer needed for these to take effect
-Stop-Process -processname explorer
-Start-Process -processname explorer
+Stop-Process -Name explorer
+Start-Process explorer
 
 # Set password to never expire (Using wmic since the latest version of powershell is the only one that works with Set-LocalUser
 wmic useraccount WHERE "Name='$Env:Username'" SET PasswordExpires=false
