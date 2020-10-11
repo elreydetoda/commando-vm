@@ -20,7 +20,8 @@ Invoke-Expression (new-object system.net.webclient).DownloadString("${setup_scri
 
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" /v StartupPage /t REG_DWORD /d 1 /f
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" /v AllItemsIconView /t REG_DWORD /d 0 /f
-cmd /C wmic useraccount where name="vagrant" set PasswordExpires=false
+# backticks from: https://stackoverflow.com/questions/14130226/error-description-invalid-query#answer-14132476
+cmd /C wmic useraccount where name=`"vagrant`" set PasswordExpires=false
 cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
 reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
 reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f
