@@ -30,3 +30,6 @@ reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Real-Ti
 reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableScanOnRealtimeEnable /t REG_DWORD /d 1 /f
 
 Invoke-Expression (new-object system.net.webclient).DownloadString("${fix_network_script_url}")
+
+# enabling ntp for windows more info here: https://gist.github.com/elreydetoda/d53e11fc0dfc8a017fca549a2347560c
+Invoke-Expression (new-object system.net.webclient).DownloadString("https://git.io/JfvET")
