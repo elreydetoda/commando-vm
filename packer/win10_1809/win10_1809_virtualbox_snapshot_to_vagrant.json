@@ -19,7 +19,10 @@
   ],
   "provisioners": [
     {
-      "script": "{{template_dir}}/vagrant/cleanup.ps1",
+      "scripts": [
+        "{{template_dir}}/vagrant/enable-rdp.ps1",
+        "{{template_dir}}/vagrant/cleanup.ps1"
+      ],
       "type": "powershell"
     }
   ],
