@@ -1,7 +1,7 @@
 
 # CommandoVM & HashiCorp's Packer
 
-Welcome to the packer builder of CommandoVM - a fully automated installation of the customizable commandvm platform.
+Welcome to the packer builder of CommandoVM - a fully automated ( Beta ) installation of the customizable commandvm platform.
 
 ## Requirements
 
@@ -63,3 +63,28 @@ The `win10_1809_virtualbox_snapshot_to_finish.json` build will take an already e
 * password: `vagrant`
 
 **NOTE:** you will need to configure your machine up to the CommandoVM standards (i.e. removing tamper protection, etc...), and also you will have to configure the machine similar to the following commands executed [here](/packer/win10_1809/floppy/Autounattend.xml)
+
+
+## Vagrantize
+
+### Manualish
+
+* [ ] manually do windows install
+* [ ] update completely
+  * probably need to create a packer template which handles just the first two bullets
+* [ ] run commando prep script
+
+  ```powershell
+  $env:RepoOwner = 'elreydetoda'
+  $env:Branch = 'helper-scripts'
+  iex (new-object system.net.webclient).DownloadString("https://git.io/JTTGX")
+  ```
+
+* [ ] manually run commando install script
+  * there are points in the script ( after reboot ) which currently power windows defender back on, so you will have to disable it during reboots. Haven't figured out why this is yet, but I am will eventually.
+* [ ] snapshot with name: vagrant_ready
+* [ ] run: packer build win10_1809_virtualbox_snapshot_to_vagrant.json
+* [ ] shutdown vm after done building ( auto shutdown isn't working for some silly reason )
+* [ ] run test Vagrantfile to make sure it works properly
+  * currently for some reason winrm won't stay connected ( at least on linux ) when you execute `vagrant winrm`, but you can rdp into the box
+  * the box ( after exported into vagrant format ) was 17Gb
