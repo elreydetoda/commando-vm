@@ -5,6 +5,10 @@ Vagrant.configure(2) do |config|
   config.vm.guest = :windows
   config.vm.communicator = "winrm"
   config.vm.boot_timeout = 300
+  config.vm.network "forwarded_port", guest: 3389, host: 3389, auto_correct: true
+  # thank you https://github.com/hashicorp/vagrant/issues/6430#issuecomment-184097261
+  config.winrm.retry_limit = 30
+  config.winrm.retry_delay = 10
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 2048
