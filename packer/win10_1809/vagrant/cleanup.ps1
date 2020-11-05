@@ -1,9 +1,10 @@
-Write-Host "Cleaning Temp Files..."
-try {
-  Takeown /d Y /R /f "C:\Windows\Temp\*"
-  Icacls "C:\Windows\Temp\*" /GRANT:r administrators:F /T /c /q  2>&1
-  Remove-Item "C:\Windows\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
-} catch { }
+# re-used code from here: https://github.com/chef/bento/blob/d576c592a900b62224db4ba2bfe39e182924fc58/packer_templates/windows/scripts/cleanup.ps1
+# Write-Host "Cleaning Temp Files..."
+# try {
+#   Takeown /d Y /R /f "C:\Windows\Temp\*"
+#   Icacls "C:\Windows\Temp\*" /GRANT:r administrators:F /T /c /q  2>&1
+#   Remove-Item "C:\Windows\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+# } catch { }
 
 Write-Host "Optimizing Drive"
 Optimize-Volume -DriveLetter C

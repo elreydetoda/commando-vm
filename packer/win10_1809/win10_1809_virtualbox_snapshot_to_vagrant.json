@@ -9,7 +9,6 @@
       "keep_registered": true,
       "shutdown_timeout": "30m",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "skip_export": true,
       "target_snapshot": "commando-snapshot",
       "type": "virtualbox-vm",
       "vm_name": "Windows_10_1809_x64_commando",
@@ -29,10 +28,10 @@
   "post-processors": [
     [
       {
-        "keep_input_artifact": true,
         "output": "windows_10-{{.Provider}}.box",
         "type": "vagrant",
-        "vagrantfile_template": "{{template_dir}}/vagrant/vagrantfile-windows.tpl"
+        "vagrantfile_template": "{{template_dir}}/vagrant/vagrantfile-windows.tpl",
+        "compression_level": 9
       }
     ]
   ]
