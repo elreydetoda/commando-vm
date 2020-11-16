@@ -98,3 +98,7 @@ The `win10_1809_virtualbox_snapshot_to_finish.json` build will take an already e
 * [ ] run test Vagrantfile to make sure it works properly
   * currently for some reason winrm won't stay connected ( at least on linux ) when you execute `vagrant winrm`, but you can rdp into the box
   * the box ( after exported into vagrant format ) was 17Gb
+
+#### Vagrant Cloud
+
+If you want your vagrant box to be auto uploaded to vagrant cloud you can copy the example variables-vagrant_cloud.json.example to variables-vagrant_cloud.json, and fill in your information.  Then you run this command: `packer build -var-file=variables-vagrant_cloud.json win10_1809_virtualbox_snapshot_to_vagrant-cloud.json` instead of running the normal packer build command
