@@ -81,7 +81,17 @@ The `win10_1809_virtualbox_snapshot_to_finish.json` build will take an already e
   ```
 
 * [ ] manually run commando install script from [master](https://github.com/fireeye/commando-vm/archive/master.zip)
+
+  * because I am lazy, here are the commands:
+
+    ```powershell
+    Unblock-File .\install.ps1
+    Set-ExecutionPolicy Unrestricted -f
+    .\install.ps1 -password vagrant -nochecks 1
+    ```
+
   * there are points in the script ( after reboot ) which currently power windows defender back on, so you will have to disable it during reboots. Haven't figured out why this is yet, but I am will eventually.
+    * or do their suggested action of `.\install.ps1 -nochecks 1 <password>` to just start the installer again ( after you disable defender )
 * [ ] snapshot with name: vagrant_ready
 * [ ] run: packer build win10_1809_virtualbox_snapshot_to_vagrant.json
 * [ ] shutdown vm after done building ( auto shutdown isn't working for some silly reason )
