@@ -80,7 +80,7 @@ The `win10_1809_virtualbox_snapshot_to_finish.json` build will take an already e
   iex (new-object system.net.webclient).DownloadString("https://git.io/JTTGX")
   ```
 
-* [ ] manually run commando install script
+* [ ] manually run commando install script from [master](https://github.com/fireeye/commando-vm/archive/master.zip)
   * there are points in the script ( after reboot ) which currently power windows defender back on, so you will have to disable it during reboots. Haven't figured out why this is yet, but I am will eventually.
 * [ ] snapshot with name: vagrant_ready
 * [ ] run: packer build win10_1809_virtualbox_snapshot_to_vagrant.json
