@@ -23,31 +23,24 @@
       "iso_url": "{{ user `iso_url` }}",
       "keep_registered": true,
       "memory": "{{ user `memory` }}",
-      "shutdown_command": "shutdown /s /t 0",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "type": "virtualbox-iso",
       "vm_name": "Windows_10_1809_x64_commando",
       "winrm_password": "vagrant",
-      "winrm_username": "vagrant"
+      "winrm_username": "vagrant",
+      "skip_export": true
     }
   ],
   "provisioners": [
     {
-      "inline": [
-        "mklink 'C:\\ProgramData\\Microsoft\\Windows Defender:omgwtfbbq' '\\??\\NUL'"
-      ],
-      "pause_before": "5m",
-      "type": "windows-shell"
-    },
-    {
       "type": "windows-restart",
-      "restart_timeout": "10m"
+      "pause_before": "10m"
     },
     {
       "filters": [
         "exclude:$_.Title -like '*Preview*'",
         "include:$true"
       ],
-      "pause_before": "10m",
       "search_criteria": "IsInstalled=0",
       "type": "windows-update"
     }
