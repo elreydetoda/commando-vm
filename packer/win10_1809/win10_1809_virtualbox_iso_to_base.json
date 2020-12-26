@@ -33,6 +33,11 @@
   ],
   "provisioners": [
     {
+      "script": "./scripts/disable_defender_script.cmd",
+      "pause_before": "5m",
+      "type": "windows-shell"
+    },
+    {
       "type": "windows-restart",
       "pause_before": "10m"
     },
