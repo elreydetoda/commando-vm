@@ -1,4 +1,8 @@
+# packer specific
 packer_cache/
 *.iso
 *.ova
 *.box
+
+# vagrant specific
+.vagrant/

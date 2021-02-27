@@ -1,0 +1,38 @@
+{
+  "_comment_space": "Requires that you have made a snapshot of the VM you intend to modify.",
+  "builders": [
+    {
+      "attach_snapshot": "vagrant_ready",
+      "communicator": "winrm",
+      "disable_shutdown": true,
+      "force_delete_snapshot": true,
+      "keep_registered": true,
+      "shutdown_timeout": "30m",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "target_snapshot": "commando-snapshot",
+      "type": "virtualbox-vm",
+      "vm_name": "Windows_10_1809_x64_commando",
+      "winrm_password": "vagrant",
+      "winrm_username": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "scripts": [
+        "{{template_dir}}/vagrant/enable-rdp.ps1",
+        "{{template_dir}}/vagrant/cleanup.ps1"
+      ],
+      "type": "powershell"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "output": "windows_10-{{.Provider}}.box",
+        "type": "vagrant",
+        "vagrantfile_template": "{{template_dir}}/vagrant/vagrantfile-windows.tpl",
+        "compression_level": 9
+      }
+    ]
+  ]
+}
