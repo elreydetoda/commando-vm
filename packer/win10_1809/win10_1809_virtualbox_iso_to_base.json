@@ -5,7 +5,8 @@
       "iso_checksum": "sha1:164F022A22D2305E6FBD82F6E35D530B6BBADCA8",
       "memory": "4096",
       "disk_size":"71680",
-      "cpus":"2"
+      "cpus":"2",
+      "install_dir": "C:/Users/vagrant/Downloads/CommandoVM"
   },
   "builders": [
     {
@@ -48,6 +49,23 @@
       ],
       "search_criteria": "IsInstalled=0",
       "type": "windows-update"
+    },
+    {
+      "inline": "mkdir {{ user `install_dir` }}",
+      "type": "powershell"
+    },
+    {
+      "destination": "{{ user `install_dir` }}/",
+      "sources": [
+        "../../install.ps1",
+        "../../packages.csv",
+        "../../profile.json",
+        "../../commandovm.win10.config.fireeye",
+        "../../commandovm.win10.installer.fireeye",
+        "../../commandovm.win10.preconfig.fireeye",
+        "../../Profiles"
+      ],
+      "type": "file"
     }
   ]
 }
