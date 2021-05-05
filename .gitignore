@@ -6,3 +6,6 @@ packer_cache/
 
 # vagrant specific
 .vagrant/
+
+# image specific ( since no removal )
+*.vdi
