@@ -1,13 +1,13 @@
 {
   "_comment_space": "Requires that you have made a snapshot of the VM you intend to modify.",
   "variables": {
-      "profile_file_name":"lite.json"
+      "profile_file_name":"profile.json",
+      "install_dir": "C:/Users/vagrant/Desktop/CommandoVM"
   },
   "builders": [
     {
       "attach_snapshot": "Snapshot_1",
       "communicator": "winrm",
-      "disable_shutdown": true,
       "force_delete_snapshot": true,
       "keep_registered": true,
       "shutdown_timeout": "30m",
@@ -15,36 +15,42 @@
       "target_snapshot": "commando-snapshot",
       "type": "virtualbox-vm",
       "vm_name": "Windows_10_1809_x64_commando",
+      "guest_additions_mode": "disable",
       "winrm_password": "vagrant",
-      "winrm_username": "vagrant"
+      "winrm_username": "vagrant",
+      "headless": "true",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\""
     }
   ],
   "provisioners": [
     {
-      "destination": "C:/Users/vagrant/Downloads/install.ps1",
-      "source": "../../install.ps1",
-      "type": "file"
-    },
-    {
-      "destination": "C:/Users/vagrant/Downloads/{{ user `profile_file_name` }}",
-      "source": "../../Profiles/{{ user `profile_file_name` }}",
-      "type": "file"
-    },
-    {
-      "inline": [
-        "Unblock-File C:/Users/vagrant/Downloads/install.ps1",
-        "C:/Users/vagrant/Downloads/install.ps1 -profile_file C:/Users/vagrant/Downloads/{{ user `profile_file_name` }} -password vagrant -snapshot_check $false -nochecks $true"
-      ],
-      "pause_before": "30s",
+      "inline": "mkdir {{ user `install_dir` }}",
       "type": "powershell"
     },
     {
-      "inline": [
-        "dir c:\\"
+      "destination": "{{ user `install_dir` }}/",
+      "sources": [
+        "../../install.ps1",
+        "../../packages.csv",
+        "../../profile.json",
+        "../../commandovm.win10.config.fireeye",
+        "../../commandovm.win10.installer.fireeye",
+        "../../commandovm.win10.preconfig.fireeye",
+        "../../Profiles",
+        "scripts/start.ps1"
       ],
-      "max_retries": 10,
-      "pause_before": "60m",
-      "type": "windows-shell"
+      "type": "file"
+    },
+    {
+      "inline": [
+        "Unblock-File {{ user `install_dir` }}/install.ps1",
+        "Unblock-File {{ user `install_dir` }}/start.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "type": "breakpoint",
+      "note": "Go and (Right click ) run the start.ps1 inside the vm and When CommandoVM is finished come back and hit Enter here."
     }
   ]
 }
