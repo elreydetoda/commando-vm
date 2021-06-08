@@ -6,10 +6,11 @@
 #   Remove-Item "C:\Windows\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
 # } catch { }
 
-Write-Host "Optimizing Drive"
+Remove-Item "C:\Users\vagrant\VBoxGuestAdditions.iso" -Force
+Write-Output "Optimizing Drive"
 Optimize-Volume -DriveLetter C
 
-Write-Host "Wiping empty space on disk..."
+Write-Output "Wiping empty space on disk..."
 $FilePath="c:\zero.tmp"
 $Volume = Get-WmiObject win32_logicaldisk -filter "DeviceID='C:'"
 $ArraySize= 64kb

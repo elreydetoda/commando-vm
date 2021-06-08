@@ -1,0 +1,124 @@
+{
+  "variables": {
+      "iso_url": "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
+      "iso_checksum": "sha1:164F022A22D2305E6FBD82F6E35D530B6BBADCA8",
+      "memory": "4096",
+      "disk_size":"71680",
+      "cpus":"2",
+      "profile_file_name":"lite.json",
+      "install_dir": "C:/Users/vagrant/Downloads/CommandoVM"
+  },
+  "builders": [
+    {
+      "communicator": "winrm",
+      "cpus": "{{ user `cpus` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "floppy_files": [
+        "./floppy/Autounattend.xml",
+        "./floppy/setup.ps1"
+      ],
+      "guest_os_type": "Windows10_64",
+      "headless": "true",
+      "hard_drive_interface": "sata",
+      "hard_drive_nonrotational": true,
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "keep_registered": true,
+      "memory": "{{ user `memory` }}",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "30m",
+      "gfx_vram_size": "48",
+      "gfx_controller": "vboxsvga",
+      "type": "virtualbox-iso",
+      "vm_name": "Windows_10_1809_x64_commandoz",
+      "guest_additions_mode": "attach",
+      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
+      "winrm_password": "vagrant",
+      "winrm_username": "vagrant",
+      "skip_export": true
+    }
+  ],
+  "provisioners": [
+    {
+      "script": "./scripts/disable_defender_script.cmd",
+      "pause_before": "5m",
+      "type": "windows-shell",
+      "valid_exit_codes": [0,1]
+    },
+    {
+      "script": "{{ template_dir }}/scripts/vbox_guest.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "type": "powershell"
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "10m"
+    },
+    {
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$true"
+      ],
+      "search_criteria": "IsInstalled=0",
+      "type": "windows-update"
+    },
+    {
+      "script": "./scripts/disable_defender_script.cmd",
+      "type": "windows-shell",
+      "valid_exit_codes": [0,1]
+    },
+    {
+      "inline": "mkdir {{ user `install_dir` }}",
+      "type": "powershell"
+    },
+    {
+      "destination": "{{ user `install_dir` }}/",
+      "sources": [
+        "../../install.ps1",
+        "../../packages.csv",
+        "../../profile.json",
+        "../../commandovm.win10.config.fireeye",
+        "../../commandovm.win10.installer.fireeye",
+        "../../commandovm.win10.preconfig.fireeye",
+        "../../Profiles",
+        "scripts/start.ps1"
+      ],
+      "type": "file"
+    },
+    {
+      "inline": [
+        "Unblock-File {{ user `install_dir` }}/install.ps1",
+        "Unblock-File {{ user `install_dir` }}/start.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "type": "breakpoint",
+      "note": "Go and (Right click ) run the start.ps1 inside the vm and When CommandoVM is finished come back and hit Enter here."
+    },
+    {
+      "scripts": [
+        "{{template_dir}}/vagrant/enable-rdp.ps1",
+        "{{template_dir}}/vagrant/cleanup.ps1"
+      ],
+      "type": "powershell"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "output": "windows_10-{{.Provider}}.box",
+        "type": "vagrant",
+        "vagrantfile_template": "{{template_dir}}/vagrant/vagrantfile-windows.tpl",
+        "compression_level": 9
+      },
+      {
+        "type": "vagrant-cloud",
+        "box_tag": "{{user `vm_name`}}",
+        "access_token": "{{user `vagrant_cloud_token`}}",
+        "version": "{{user `vm_version`}}"
+      }
+    ]
+  ]
+}

@@ -5,8 +5,7 @@
       "iso_checksum": "sha1:164F022A22D2305E6FBD82F6E35D530B6BBADCA8",
       "memory": "4096",
       "disk_size":"71680",
-      "cpus":"2",
-      "install_dir": "C:/Users/vagrant/Downloads/CommandoVM"
+      "cpus":"2"
   },
   "builders": [
     {
@@ -18,6 +17,7 @@
         "./floppy/setup.ps1"
       ],
       "guest_os_type": "Windows10_64",
+      "headless": "true",
       "hard_drive_interface": "sata",
       "hard_drive_nonrotational": true,
       "iso_checksum": "{{ user `iso_checksum` }}",
@@ -25,11 +25,16 @@
       "keep_registered": true,
       "memory": "{{ user `memory` }}",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "30m",
       "type": "virtualbox-iso",
       "vm_name": "Windows_10_1809_x64_commando",
+      "guest_additions_mode": "attach",
+      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
       "winrm_password": "vagrant",
       "winrm_username": "vagrant",
-      "skip_export": true
+      "skip_export": true,
+      "gfx_vram_size": "60",
+      "gfx_controller": "vboxsvga"
     }
   ],
   "provisioners": [
@@ -39,8 +44,14 @@
       "type": "windows-shell"
     },
     {
-      "type": "windows-restart",
+      "script": "{{ template_dir }}/scripts/vbox_guest.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "type": "powershell",
       "pause_before": "10m"
+    },
+    {
+      "type": "windows-restart"
     },
     {
       "filters": [
@@ -49,23 +60,6 @@
       ],
       "search_criteria": "IsInstalled=0",
       "type": "windows-update"
-    },
-    {
-      "inline": "mkdir {{ user `install_dir` }}",
-      "type": "powershell"
-    },
-    {
-      "destination": "{{ user `install_dir` }}/",
-      "sources": [
-        "../../install.ps1",
-        "../../packages.csv",
-        "../../profile.json",
-        "../../commandovm.win10.config.fireeye",
-        "../../commandovm.win10.installer.fireeye",
-        "../../commandovm.win10.preconfig.fireeye",
-        "../../Profiles"
-      ],
-      "type": "file"
     }
   ]
 }
